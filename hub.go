@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 )
 
 type Hub struct {
@@ -22,7 +23,7 @@ func newHub() *Hub {
 }
 
 func (h *Hub) run() {
-	//listCursorTicker := time.NewTicker(time.Second)
+	listCursorTicker := time.NewTicker(time.Second)
 	for {
 		select {
 		case client := <-h.register:
@@ -34,10 +35,8 @@ func (h *Hub) run() {
 			close(client.send)
 		case message := <-h.broadcast:
 			_ = DealMassage(h, message)
-			//case <-listCursorTicker.C:
-			//	for client := range h.clients {
-			//
-			//	}
+		case <-listCursorTicker.C:
+			_ = SendCursorCheck(h)
 		}
 	}
 }

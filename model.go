@@ -5,12 +5,13 @@ import "encoding/json"
 type operStatus int
 
 const (
-	Moved   operStatus = 1
-	Deleted operStatus = 2
-	Listed  operStatus = 3
-	Catch   operStatus = 4
-	Added   operStatus = 5
-	GetID   operStatus = 6
+	Moved       operStatus = 1
+	Deleted     operStatus = 2
+	Listed      operStatus = 3
+	Catch       operStatus = 4
+	Added       operStatus = 5
+	GetID       operStatus = 6
+	CursorCheck operStatus = 7
 )
 
 type Cursor struct {

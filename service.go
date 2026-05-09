@@ -47,6 +47,8 @@ func DealMassage(hub *Hub, msg []byte) error {
 		err = AddCursor(hub, operation)
 	case Moved:
 		err = MoveCursor(hub, operation)
+	case CursorCheck:
+		err = GetCursorCheck(hub, operation)
 		// todo other oper
 
 	}
@@ -137,4 +139,21 @@ func sendMassageOne(hub *Hub, msg interface{}, aim string) error {
 	}
 
 	return err
+}
+
+func SendCursorCheck(hub *Hub) error {
+	originCursorList := hub.cursorList
+	hub.cursorList = hub.cursorList[:0]
+	return responseMassageAll(hub, CursorCheck, originCursorList, "")
+}
+
+func GetCursorCheck(hub *Hub, req Operation) error {
+	var cursor Cursor
+	err := json.Unmarshal(req.Data, &cursor)
+	if err != nil {
+		return err
+	}
+
+	hub.cursorList = append(hub.cursorList, cursor)
+	return nil
 }
