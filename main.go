@@ -13,7 +13,7 @@ func main() {
 
 	http.HandleFunc("/api/cursor", func(w http.ResponseWriter, r *http.Request) { CursorWebsocketHandler(w, r, hub) })
 
-	http.Handle("/", http.FileServer(http.Dir("./public")))
+	http.Handle("/", http.FileServer(http.Dir("./front")))
 
 	fmt.Printf("listen http://localhost:%d\n", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
