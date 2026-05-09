@@ -20,25 +20,9 @@ func AddCursor(hub *Hub, req Operation) error {
 	cursor.ID = req.ID
 	hub.cursorList = append(hub.cursorList, cursor)
 
-	sendMsg, err := json.Marshal(hub.cursorList)
+	err = responseMassage(hub, Listed, hub.cursorList, cursor.ID)
 	if err != nil {
 		return err
-	}
-
-	for client := range hub.clients {
-		if client.id == cursor.ID {
-			cursorResp := AddCursorResp{cursor.ID}
-			cursorRespMsg, err := json.Marshal(cursorResp)
-			if err != nil {
-				return err
-			}
-			client.send <- cursorRespMsg
-			continue
-		}
-		select {
-		case client.send <- sendMsg:
-		default:
-		}
 	}
 
 	return nil
@@ -55,6 +39,8 @@ func DealMassage(hub *Hub, msg []byte) error {
 	switch operation.Status {
 	case Added:
 		err = AddCursor(hub, operation)
+	case Moved:
+		err = MoveCursor(hub, operation)
 		// todo other oper
 
 	}
@@ -80,5 +66,42 @@ func GetClientID(c *Client) error {
 	case c.send <- sendMsg:
 	default:
 	}
+	return err
+}
+
+func MoveCursor(hub *Hub, req Operation) error {
+	var cursor Cursor
+	err := json.Unmarshal(req.Data, &cursor)
+	if err != nil {
+		return err
+	}
+
+	return responseMassage(hub, Moved, cursor, cursor.ID)
+}
+
+func responseMassage(hub *Hub, status operStatus, data interface{}, exp string) error {
+	response := &Response{
+		Status: status,
+		Data:   data,
+	}
+	return sendMassage(hub, response, exp)
+}
+
+func sendMassage(hub *Hub, msg interface{}, exp string) error {
+	sendMsg, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	for client := range hub.clients {
+		if client.id == exp {
+			continue
+		}
+		select {
+		case client.send <- sendMsg:
+		default:
+		}
+	}
+
 	return err
 }
