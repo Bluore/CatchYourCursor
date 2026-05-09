@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -28,6 +29,7 @@ func (c *Client) ReadLoop() {
 	}()
 	for {
 		_, message, err := c.conn.ReadMessage()
+		fmt.Println(fmt.Sprintf("[%s]: %s", c.id, message))
 		if err != nil {
 			break
 		}

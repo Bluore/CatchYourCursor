@@ -1,15 +1,17 @@
 
-.cursor {
-    position: absolute;
+.body {
+    position: relative;
 }
 
 .cursor-item {
     display: block;
-    position: relative;
-    /* top: 50px;
-    left: 75px; */
+    position: absolute;
+    top: 0px;
+    left: 0px;
     height: 10px;
     width: 10px;
     background-color: orange;
     border: 2px red dashed;
+    opacity: 0.5;
+    transition: all 0.2s ease-out;
 }
