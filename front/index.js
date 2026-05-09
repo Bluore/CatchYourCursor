@@ -16,6 +16,6 @@ function MoveTheCursor(data) {
     console.log(data)
     console.log(`move the cursor to (${data.x},${data.y})`)
     const cursor = document.getElementById("test")
-    cursor.style.top = `${data.x}px`
-    cursor.style.left = `${data.y}px`
+    cursor.style.left = `${data.x}px`
+    cursor.style.top = `${data.y}px`
 }
