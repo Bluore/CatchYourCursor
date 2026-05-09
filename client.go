@@ -37,7 +37,6 @@ func (c *Client) ReadLoop() {
 
 func (c *Client) WriteLoop() {
 	defer func() {
-		c.hub.unregister <- c
 		_ = c.conn.Close()
 	}()
 	for {

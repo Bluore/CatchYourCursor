@@ -21,4 +21,6 @@ func CursorWebsocketHandler(w http.ResponseWriter, r *http.Request, hub *Hub) {
 
 	go client.ReadLoop()
 	go client.WriteLoop()
+
+	_ = GetClientID(client)
 }

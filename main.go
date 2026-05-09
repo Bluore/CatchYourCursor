@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+const port = 9947
+
 func main() {
 	hub := newHub()
 	go hub.run()
@@ -13,8 +15,8 @@ func main() {
 
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 
-	fmt.Print("listen http://localhost:9947")
-	err := http.ListenAndServe(":9947", nil)
+	fmt.Printf("listen http://localhost:%d\n", port)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 	if err != nil {
 		panic(err)
 	}

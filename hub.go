@@ -5,6 +5,7 @@ import (
 )
 
 type Hub struct {
+	cursorList []Cursor
 	broadcast  chan []byte
 	register   chan *Client
 	unregister chan *Client
@@ -21,6 +22,7 @@ func newHub() *Hub {
 }
 
 func (h *Hub) run() {
+	//listCursorTicker := time.NewTicker(time.Second)
 	for {
 		select {
 		case client := <-h.register:
@@ -31,14 +33,11 @@ func (h *Hub) run() {
 			delete(h.clients, client)
 			close(client.send)
 		case message := <-h.broadcast:
-			for client := range h.clients {
-				select {
-				case client.send <- message:
-				default:
-					delete(h.clients, client)
-					close(client.send)
-				}
-			}
+			_ = DealMassage(h, message)
+			//case <-listCursorTicker.C:
+			//	for client := range h.clients {
+			//
+			//	}
 		}
 	}
 }
