@@ -10,6 +10,7 @@ func AddCursor(hub *Hub, req Operation) error {
 	//if !ok {
 	//	return fmt.Errorf("AddCursor: invalid data type %T", req.Data)
 	//}
+	originCursorList := hub.cursorList
 
 	var cursor Cursor
 	err := json.Unmarshal(req.Data, &cursor)
@@ -20,7 +21,12 @@ func AddCursor(hub *Hub, req Operation) error {
 	cursor.ID = req.ID
 	hub.cursorList = append(hub.cursorList, cursor)
 
-	err = responseMassage(hub, Listed, hub.cursorList, cursor.ID)
+	err = responseMassageOne(hub, Listed, originCursorList, req.ID)
+	if err != nil {
+		return err
+	}
+
+	err = responseMassageAll(hub, Added, cursor, req.ID)
 	if err != nil {
 		return err
 	}
@@ -76,18 +82,18 @@ func MoveCursor(hub *Hub, req Operation) error {
 		return err
 	}
 
-	return responseMassage(hub, Moved, cursor, cursor.ID)
+	return responseMassageAll(hub, Moved, cursor, cursor.ID)
 }
 
-func responseMassage(hub *Hub, status operStatus, data interface{}, exp string) error {
+func responseMassageAll(hub *Hub, status operStatus, data interface{}, exp string) error {
 	response := &Response{
 		Status: status,
 		Data:   data,
 	}
-	return sendMassage(hub, response, exp)
+	return sendMassageAll(hub, response, exp)
 }
 
-func sendMassage(hub *Hub, msg interface{}, exp string) error {
+func sendMassageAll(hub *Hub, msg interface{}, exp string) error {
 	sendMsg, err := json.Marshal(msg)
 	if err != nil {
 		return err
@@ -101,6 +107,33 @@ func sendMassage(hub *Hub, msg interface{}, exp string) error {
 		case client.send <- sendMsg:
 		default:
 		}
+	}
+
+	return err
+}
+func responseMassageOne(hub *Hub, status operStatus, data interface{}, aim string) error {
+	response := &Response{
+		Status: status,
+		Data:   data,
+	}
+	return sendMassageOne(hub, response, aim)
+}
+
+func sendMassageOne(hub *Hub, msg interface{}, aim string) error {
+	sendMsg, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+
+	for client := range hub.clients {
+		if client.id != aim {
+			continue
+		}
+		select {
+		case client.send <- sendMsg:
+		default:
+		}
+		break
 	}
 
 	return err
