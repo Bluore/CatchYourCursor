@@ -1,6 +1,9 @@
 
-.body {
+body {
     position: relative;
+    cursor: url("./public/cursor_default.png"), auto;
+    width: 100vw;
+    height: 100vh;
 }
 
 .cursor-item {
@@ -10,8 +13,8 @@
     left: 0px;
     height: 10px;
     width: 10px;
-    background-color: orange;
-    border: 2px red dashed;
+    /* background-color: orange;
+    border: 2px red dashed; */
     opacity: 0.5;
     transition: all 0.2s ease-out;
 }

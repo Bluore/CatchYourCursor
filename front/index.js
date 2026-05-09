@@ -47,13 +47,16 @@ function CreateDOMCursor(data){
     console.log(data)
     const parent = document.getElementById("cursor-list");
     const child = document.createElement("div");
-
     child.className = "cursor-item";
     child.id = `cursor${data.id}`
+    const cursorImg = document.createElement("img")
+    cursorImg.src = "./public/cursor_default.png"
+    
     // child.style.top = data.x
     // child.style.left = data.y
     
     parent.appendChild(child)
+    child.appendChild(cursorImg)
     MoveTheCursor(data)
 }
 
