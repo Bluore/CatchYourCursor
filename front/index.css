@@ -1,13 +1,14 @@
 
 body {
     position: relative;
-    cursor: url("./public/cursor_default.png"), auto;
+    cursor: url("./public/cursor_point.png"), auto;
     width: 100vw;
     height: 100vh;
+    padding: 0;
 }
 
 a {
-    cursor: url("./public/cursor_link.png"), pointer;
+    cursor: url("./public/cursor_point.png"), pointer;
 }
 
 .cursor-item {
@@ -21,4 +22,15 @@ a {
     border: 2px red dashed; */
     opacity: 0.5;
     transition: all 0.2s ease-out;
+    pointer-events: none;
+}
+
+.cursor-item.my-cursor {
+    transition: all 0.2s ease-out;
+    opacity: 1;
+}
+
+.cursor-item img{
+    top:0;
+    left: 0;
 }

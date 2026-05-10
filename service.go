@@ -6,10 +6,6 @@ import (
 )
 
 func AddCursor(hub *Hub, req Operation) error {
-	//msg, ok := req.Data.([]byte)
-	//if !ok {
-	//	return fmt.Errorf("AddCursor: invalid data type %T", req.Data)
-	//}
 	originCursorList := hub.cursorList
 
 	var cursor Cursor
@@ -49,8 +45,8 @@ func DealMassage(hub *Hub, msg []byte) error {
 		err = MoveCursor(hub, operation)
 	case CursorCheck:
 		err = GetCursorCheck(hub, operation)
-		// todo other oper
-
+	case Catch:
+		err = CatchCursorService(hub, operation)
 	}
 	if err != nil {
 		fmt.Println(fmt.Sprintf("operation deal cursor error: %v", err))
@@ -108,6 +104,7 @@ func sendMassageAll(hub *Hub, msg interface{}, exp string) error {
 		select {
 		case client.send <- sendMsg:
 		default:
+			hub.unregister <- client
 		}
 	}
 
@@ -134,6 +131,7 @@ func sendMassageOne(hub *Hub, msg interface{}, aim string) error {
 		select {
 		case client.send <- sendMsg:
 		default:
+			hub.unregister <- client
 		}
 		break
 	}
@@ -156,4 +154,14 @@ func GetCursorCheck(hub *Hub, req Operation) error {
 
 	hub.cursorList = append(hub.cursorList, cursor)
 	return nil
+}
+
+func CatchCursorService(hub *Hub, req Operation) error {
+	var cursor Cursor
+	err := json.Unmarshal(req.Data, &cursor)
+	if err != nil {
+		return err
+	}
+
+	return responseMassageAll(hub, Catch, cursor, cursor.ID)
 }

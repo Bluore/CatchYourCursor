@@ -1,4 +1,5 @@
-const Host = window.location.host
+// const Host = window.location.host
+const Host = "localhost:9947"
 CursorList = []
 
 var WSClient = new WebSocket(`ws://${Host}/api/cursor`)
@@ -63,8 +64,8 @@ function CreateDOMCursor(data){
 function MoveTheCursor(data) {
     // console.log(`move the cursor to (${data.x},${data.y})`)
     const cursor = document.getElementById(`cursor${data.id}`)
-    cursor.style.left = `${data.x}px`
-    cursor.style.top = `${data.y}px`
+    cursor.style.left = `${data.x-10}px`
+    cursor.style.top = `${data.y-10}px`
 }
 
 function DeleteDOMCursor(data){
@@ -74,6 +75,7 @@ function DeleteDOMCursor(data){
     child.remove()
 }
 
+// 鼠标指针
 var mouseMoveLastTime = 0
 var cursorX = 0,cursorY = 0
 document.addEventListener("mousemove",(e)=>{
@@ -85,6 +87,27 @@ document.addEventListener("mousemove",(e)=>{
     cursorX = e.x;
     cursorY = e.y;
     // console.log(`mouse is in (${e.x},${e.y})`);
+    
+    // 移动虚假cursor
+    targetName = e.target.tagName.toLowerCase()
+    const myCursor = document.getElementById("my-cursor")
+    const myCursorImg = myCursor.firstElementChild
+    
+    // console.log("cursor target node: ",e.target.nodeType)
+    if (e.target.nodeType == 2){
+        targetName = "a"
+    }
+    switch (targetName){
+        case "a":
+            myCursorImg.src = "./public/cursor_link.png" 
+            break
+        default :
+            myCursorImg.src = "./public/cursor_default.png" 
+    }
+    myCursor.style.top = `${e.y-10}px`
+    myCursor.style.left = `${e.x-10}px`
+    // console.log("cursor target: ",e.target)
+    // console.log("cursor target name: ",targetName)
     
     const sendData = {
         status: 1,
