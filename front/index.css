@@ -5,6 +5,7 @@ body {
     width: 100vw;
     height: 100vh;
     padding: 0;
+    margin: 0;
 }
 
 a {
@@ -22,12 +23,14 @@ a {
     border: 2px red dashed; */
     opacity: 0.5;
     transition: all 0.2s ease-out;
+    user-select: none;
     pointer-events: none;
 }
 
 .cursor-item.my-cursor {
     transition: all 0.2s ease-out;
     opacity: 1;
+    pointer-events: none;
 }
 
 .cursor-item img{

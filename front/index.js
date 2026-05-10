@@ -64,8 +64,8 @@ function CreateDOMCursor(data){
 function MoveTheCursor(data) {
     // console.log(`move the cursor to (${data.x},${data.y})`)
     const cursor = document.getElementById(`cursor${data.id}`)
-    cursor.style.left = `${data.x-10}px`
-    cursor.style.top = `${data.y-10}px`
+    cursor.style.left = `${data.x}px`
+    cursor.style.top = `${data.y}px`
 }
 
 function DeleteDOMCursor(data){
@@ -104,8 +104,8 @@ document.addEventListener("mousemove",(e)=>{
         default :
             myCursorImg.src = "./public/cursor_default.png" 
     }
-    myCursor.style.top = `${e.y-10}px`
-    myCursor.style.left = `${e.x-10}px`
+    myCursor.style.top = `${e.y}px`
+    myCursor.style.left = `${e.x}px`
     // console.log("cursor target: ",e.target)
     // console.log("cursor target name: ",targetName)
     
